@@ -1,9 +1,9 @@
 # N. Tropy
 
 ```
-Nefarious Tropy, mais conhecido como N. Tropy, é um antagonista recorrente da série Crash Bandicoot.
-Estreando em Crash Bandicoot: Warped, ele é o autoproclamado mestre do tempo e especialista em tecnologia
-de dobra quântica.
+Nefarious Tropy, mais conhecido como N. Tropy, é um antagonista recorrente da série Crash
+Bandicoot. Estreando em Crash Bandicoot: Warped, ele é o autoproclamado mestre do tempo e
+especialista em tecnologia de dobra quântica.
 ```
 
 Comando de terminal simples e minimalista para mostrar os horários de saída de uma jornada de trabalho baseado no horário de entrada.
