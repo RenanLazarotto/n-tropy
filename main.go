@@ -56,6 +56,11 @@ func main() {
 
 	startHour, errHour := strconv.Atoi(os.Args[1])
 	startMinute, errMinute := strconv.Atoi(os.Args[2])
+	flagReverse := false
+
+	if len(os.Args) == 4 {
+		flagReverse = os.Args[3] == "reverse"
+	}
 
 	if errHour != nil || errMinute != nil {
 		log.Fatal("Os horários de entrada e de saída são obrigatórios.")
@@ -68,10 +73,19 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	fullTime := clockIn.GetTime().Add(FULL_TIME)
-	halfTime := clockIn.GetTime().Add(HALF_TIME)
-	shortTime := clockIn.GetTime().Add(SHORT_TIME)
-	maxOvertime := clockIn.GetTime().Add(MAX_OVERTIME)
+	var fullTime, halfTime, shortTime, maxOvertime time.Time
+
+	if !flagReverse {
+		fullTime = clockIn.GetTime().Add(FULL_TIME)
+		halfTime = clockIn.GetTime().Add(HALF_TIME)
+		shortTime = clockIn.GetTime().Add(SHORT_TIME)
+		maxOvertime = clockIn.GetTime().Add(MAX_OVERTIME)
+	} else {
+		fullTime = clockIn.GetTime().Add(-FULL_TIME)
+		halfTime = clockIn.GetTime().Add(-HALF_TIME)
+		shortTime = clockIn.GetTime().Add(-SHORT_TIME)
+		maxOvertime = clockIn.GetTime().Add(-MAX_OVERTIME)
+	}
 
 	bold := lipgloss.NewStyle().Bold(true).Render
 	center := lipgloss.NewStyle().Align(lipgloss.Center)
@@ -84,7 +98,13 @@ func main() {
 
 		return table.DefaultStyles(row, col)
 	})
-	t.Row(bold("Jornada"), bold("Saída"))
+
+	if !flagReverse {
+		t.Row(bold("Jornada"), bold("Saída"))
+	} else {
+		t.Row(bold("Jornada"), bold("Entrada"))
+	}
+
 	t.Row(bold("10:48 (+2h)"), maxOvertime.Format("15:04"))
 	t.Row(bold("08:48"), fullTime.Format("15:04"))
 	t.Row("08:30", halfTime.Format("15:04"))
