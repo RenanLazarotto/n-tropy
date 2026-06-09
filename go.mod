@@ -1,6 +1,6 @@
 module nefarious-tropy
 
-go 1.23.4
+go 1.26.3
 
 require (
 	github.com/charmbracelet/lipgloss v0.13.0

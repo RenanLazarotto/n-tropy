@@ -10,7 +10,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "main.go",
-            "args": ["7", "59"]
+            "args": ["7:59"]
         }
     ]
 }

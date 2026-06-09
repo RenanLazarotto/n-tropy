@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/charmbracelet/lipgloss"
@@ -14,9 +15,8 @@ import (
 
 const (
 	FULL_TIME    = 9*time.Hour + 48*time.Minute
-	HALF_TIME    = 9*time.Hour + 30*time.Minute
 	SHORT_TIME   = 9 * time.Hour
-	MAX_OVERTIME = 11*time.Hour + 48*time.Minute
+	MAX_OVERTIME = 11 * time.Hour
 )
 
 type ClockIn struct {
@@ -50,16 +50,18 @@ func main() {
 
 	clockIn := ClockIn{}
 
-	if len(os.Args) < 2 {
-		log.Fatal("Necessário informar horário de entrada no formato <h> <m>")
+	input := strings.Split(os.Args[1], ":")
+
+	if len(input) < 2 {
+		log.Fatal("Necessário informar horário de entrada no formato <h>:<m>")
 	}
 
-	startHour, errHour := strconv.Atoi(os.Args[1])
-	startMinute, errMinute := strconv.Atoi(os.Args[2])
+	startHour, errHour := strconv.Atoi(input[0])
+	startMinute, errMinute := strconv.Atoi(input[1])
 	flagReverse := false
 
-	if len(os.Args) == 4 {
-		flagReverse = os.Args[3] == "reverse"
+	if len(os.Args) == 3 {
+		flagReverse = os.Args[2] == "reverse" || os.Args[2] == "r"
 	}
 
 	if errHour != nil || errMinute != nil {
@@ -73,16 +75,14 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	var fullTime, halfTime, shortTime, maxOvertime time.Time
+	var fullTime, shortTime, maxOvertime time.Time
 
 	if !flagReverse {
 		fullTime = clockIn.GetTime().Add(FULL_TIME)
-		halfTime = clockIn.GetTime().Add(HALF_TIME)
 		shortTime = clockIn.GetTime().Add(SHORT_TIME)
 		maxOvertime = clockIn.GetTime().Add(MAX_OVERTIME)
 	} else {
 		fullTime = clockIn.GetTime().Add(-FULL_TIME)
-		halfTime = clockIn.GetTime().Add(-HALF_TIME)
 		shortTime = clockIn.GetTime().Add(-SHORT_TIME)
 		maxOvertime = clockIn.GetTime().Add(-MAX_OVERTIME)
 	}
@@ -105,9 +105,8 @@ func main() {
 		t.Row(bold("Jornada"), bold("Entrada"))
 	}
 
-	t.Row(bold("10:48 (+2h)"), maxOvertime.Format("15:04"))
+	t.Row(bold("10:00 (+1h12min)"), maxOvertime.Format("15:04"))
 	t.Row(bold("08:48"), fullTime.Format("15:04"))
-	t.Row("08:30", halfTime.Format("15:04"))
 	t.Row("08:00", shortTime.Format("15:04"))
 
 	t.Border(lipgloss.HiddenBorder())
